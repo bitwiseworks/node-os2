@@ -393,6 +393,11 @@
           'BUILDING_UV_SHARED=1',
         ],
       }],
+      ['OS == "os2"', {
+        'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', '-m32', ],
+        'cflags_cc': [ '-fno-rtti', '-fno-exceptions', '-std=gnu++1y' ],
+        'ldflags': [ '-m32' ],
+      }],
       [ 'OS in "linux freebsd openbsd solaris aix"', {
         'cflags': [ '-pthread' ],
         'ldflags': [ '-pthread' ],

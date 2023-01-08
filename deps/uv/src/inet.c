@@ -41,8 +41,10 @@ int uv_inet_ntop(int af, const void* src, char* dst, size_t size) {
   switch (af) {
   case AF_INET:
     return (inet_ntop4(src, dst, size));
+#ifndef __OS2__
   case AF_INET6:
     return (inet_ntop6(src, dst, size));
+#endif
   default:
     return UV_EAFNOSUPPORT;
   }
@@ -64,6 +66,7 @@ static int inet_ntop4(const unsigned char *src, char *dst, size_t size) {
 }
 
 
+#ifndef __OS2__
 static int inet_ntop6(const unsigned char *src, char *dst, size_t size) {
   /*
    * Note that int32_t and int16_t need only be "at least" large enough
@@ -146,6 +149,7 @@ static int inet_ntop6(const unsigned char *src, char *dst, size_t size) {
   uv__strscpy(dst, tmp, size);
   return 0;
 }
+#endif
 
 
 int uv_inet_pton(int af, const char* src, void* dst) {
@@ -155,6 +159,7 @@ int uv_inet_pton(int af, const char* src, void* dst) {
   switch (af) {
   case AF_INET:
     return (inet_pton4(src, dst));
+#ifndef __OS2__
   case AF_INET6: {
     int len;
     char tmp[UV__INET6_ADDRSTRLEN], *s, *p;
@@ -170,6 +175,7 @@ int uv_inet_pton(int af, const char* src, void* dst) {
     }
     return inet_pton6(s, dst);
   }
+#endif
   default:
     return UV_EAFNOSUPPORT;
   }
@@ -216,6 +222,7 @@ static int inet_pton4(const char *src, unsigned char *dst) {
 }
 
 
+#ifndef __OS2__
 static int inet_pton6(const char *src, unsigned char *dst) {
   static const char xdigits_l[] = "0123456789abcdef",
                     xdigits_u[] = "0123456789ABCDEF";
@@ -301,3 +308,4 @@ static int inet_pton6(const char *src, unsigned char *dst) {
   memcpy(dst, tmp, sizeof tmp);
   return 0;
 }
+#endif

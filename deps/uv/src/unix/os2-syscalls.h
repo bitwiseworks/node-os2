@@ -19,20 +19,14 @@
  * IN THE SOFTWARE.
  */
 
+
+#ifndef UV_OS2_SYSCALL_H_
+#define UV_OS2_SYSCALL_H_
+
 #include "uv.h"
 #include "internal.h"
+#include <dirent.h>
 
-#include <stdint.h>
-#ifndef __OS2__
-#include <sys/sysinfo.h>
+/* utility functions */
 
-void uv_loadavg(double avg[3]) {
-  struct sysinfo info;
-
-  if (sysinfo(&info) < 0) return;
-
-  avg[0] = (double) info.loads[0] / 65536.0;
-  avg[1] = (double) info.loads[1] / 65536.0;
-  avg[2] = (double) info.loads[2] / 65536.0;
-}
-#endif
+#endif /* UV_OS2_SYSCALL_H_ */

@@ -273,9 +273,10 @@ void TCPWrap::Bind(const FunctionCallbackInfo<Value>& args) {
 
 
 void TCPWrap::Bind6(const FunctionCallbackInfo<Value>& args) {
+#ifndef __OS2__
   Bind<sockaddr_in6>(args, AF_INET6, uv_ip6_addr);
+#endif
 }
-
 
 void TCPWrap::Listen(const FunctionCallbackInfo<Value>& args) {
   TCPWrap* wrap;
@@ -304,6 +305,7 @@ void TCPWrap::Connect(const FunctionCallbackInfo<Value>& args) {
 
 
 void TCPWrap::Connect6(const FunctionCallbackInfo<Value>& args) {
+#ifndef __OS2__
   Environment* env = Environment::GetCurrent(args);
   CHECK(args[2]->IsUint32());
   int port;
@@ -312,6 +314,9 @@ void TCPWrap::Connect6(const FunctionCallbackInfo<Value>& args) {
                         [port](const char* ip_address, sockaddr_in6* addr) {
       return uv_ip6_addr(ip_address, port, addr);
   });
+#else
+  return;
+#endif
 }
 
 template <typename T>
@@ -389,7 +394,9 @@ MaybeLocal<Object> AddressToJS(Environment* env,
   EscapableHandleScope scope(env->isolate());
   char ip[INET6_ADDRSTRLEN + UV_IF_NAMESIZE];
   const sockaddr_in* a4;
+#ifndef __OS2__
   const sockaddr_in6* a6;
+#endif
 
   int port;
 
@@ -397,6 +404,7 @@ MaybeLocal<Object> AddressToJS(Environment* env,
     info = Object::New(env->isolate());
 
   switch (addr->sa_family) {
+#ifndef __OS2__
   case AF_INET6:
     a6 = reinterpret_cast<const sockaddr_in6*>(addr);
     uv_inet_ntop(AF_INET6, &a6->sin6_addr, ip, sizeof ip);
@@ -424,7 +432,7 @@ MaybeLocal<Object> AddressToJS(Environment* env,
               env->port_string(),
               Integer::New(env->isolate(), port)).Check();
     break;
-
+#endif
   case AF_INET:
     a4 = reinterpret_cast<const sockaddr_in*>(addr);
     uv_inet_ntop(AF_INET, &a4->sin_addr, ip, sizeof ip);
