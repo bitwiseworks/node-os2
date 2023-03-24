@@ -862,7 +862,7 @@ namespace std {
  */
 #ifdef U_HIDDEN
     /* Use the predefined value. */
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && !defined(__OS2__)
 #   define U_HIDDEN __attribute__((visibility("hidden")))
 #else
 #   define U_HIDDEN 
