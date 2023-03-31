@@ -1366,7 +1366,7 @@ int ReverseTraits::Send(GetHostByAddrWrap* wrap, const char* name) {
   } else if (uv_inet_pton(AF_INET6, name, &address_buffer) == 0) {
     length = sizeof(struct in6_addr);
     family = AF_INET6;
-#endif    
+#endif
   } else {
     return UV_EINVAL;  // So errnoException() reports a proper error.
   }
@@ -1462,7 +1462,7 @@ void AfterGetAddrInfo(uv_getaddrinfo_t* req, int status, struct addrinfo* res) {
         } else if (want_ipv6 && p->ai_family == AF_INET6) {
           addr = reinterpret_cast<char*>(
               &(reinterpret_cast<struct sockaddr_in6*>(p->ai_addr)->sin6_addr));
-#endif              
+#endif
         } else {
           continue;
         }
@@ -1546,7 +1546,7 @@ void CanonicalizeIP(const FunctionCallbackInfo<Value>& args) {
   if (uv_inet_pton(af = AF_INET, *ip, result) != 0
 #ifndef __OS2__
       && uv_inet_pton(af = AF_INET6, *ip, result) != 0
-#endif      
+#endif
       )
     return;
 
@@ -1585,7 +1585,7 @@ void GetAddrInfo(const FunctionCallbackInfo<Value>& args) {
     case 6:
       family = AF_INET6;
       break;
-#endif      
+#endif
     default:
       CHECK(0 && "bad address family");
   }
@@ -1607,7 +1607,7 @@ void GetAddrInfo(const FunctionCallbackInfo<Value>& args) {
       family == AF_INET ? "ipv4" :
 #ifndef __OS2__
       family == AF_INET6 ? "ipv6" :
-#endif      
+#endif
       "unspec");
 
   int err = req_wrap->Dispatch(uv_getaddrinfo,
@@ -1828,7 +1828,7 @@ void SetLocalAddress(const FunctionCallbackInfo<Value>& args) {
       } else {
         ares_set_local_ip6(channel->cares_channel(), addr1);
       }
-#endif      
+#endif
     } else {
       THROW_ERR_INVALID_ARG_VALUE(env, "Invalid IP address.");
       return;
@@ -1913,9 +1913,11 @@ void Initialize(Local<Object> target,
   target->Set(env->context(), FIXED_ONE_BYTE_STRING(env->isolate(),
                                                     "AF_UNSPEC"),
               Integer::New(env->isolate(), AF_UNSPEC)).Check();
+#ifdef AI_ADDRCONFIG
   target->Set(env->context(), FIXED_ONE_BYTE_STRING(env->isolate(),
                                                     "AI_ADDRCONFIG"),
               Integer::New(env->isolate(), AI_ADDRCONFIG)).Check();
+#endif
   target->Set(env->context(), FIXED_ONE_BYTE_STRING(env->isolate(),
                                                     "AI_ALL"),
               Integer::New(env->isolate(), AI_ALL)).Check();
