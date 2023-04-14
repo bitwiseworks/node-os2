@@ -71,6 +71,7 @@ int ares_append_ai_node(int aftype,
       node->ai_ttl = ttl;
     }
 
+#ifndef __OS2__
   if (aftype == AF_INET6)
     {
       struct sockaddr_in6 *sin6 = ares_malloc(sizeof(*sin6));
@@ -90,6 +91,7 @@ int ares_append_ai_node(int aftype,
       node->ai_addr = (struct sockaddr *)sin6;
       node->ai_ttl = ttl;
     }
+#endif
 
   return ARES_SUCCESS;
 }
@@ -101,6 +103,7 @@ static int ares__default_loopback_addrs(int aftype,
 {
   int status = ARES_SUCCESS;
 
+#ifndef __OS2__
   if (aftype == AF_UNSPEC || aftype == AF_INET6)
     {
       struct ares_in6_addr addr6;
@@ -111,6 +114,7 @@ static int ares__default_loopback_addrs(int aftype,
           return status;
        }
     }
+#endif
 
   if (aftype == AF_UNSPEC || aftype == AF_INET)
     {
