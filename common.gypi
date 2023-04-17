@@ -395,7 +395,8 @@
       }],
       ['OS == "os2"', {
         'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', '-m32', ],
-        'cflags_cc': [ '-fno-rtti', '-fno-exceptions', '-std=gnu++1y' ],
+        'cflags_cc': [ '-fno-rtti', '-fno-exceptions', '-std=gnu++17' ],
+        'defines': [ '__STDC_FORMAT_MACROS' ],
         'ldflags': [ '-m32' ],
       }],
       [ 'OS in "linux freebsd openbsd solaris aix"', {

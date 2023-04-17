@@ -289,12 +289,12 @@
           'sources': [
             '<(V8_ROOT)/src/builtins/riscv/builtins-riscv.cc',
           ],
-        }],        
+        }],
         ['v8_target_arch=="loong64" or v8_target_arch=="loong64"', {
           'sources': [
             '<(V8_ROOT)/src/builtins/loong64/builtins-loong64.cc',
           ],
-        }],        
+        }],
         ['v8_target_arch=="mips64" or v8_target_arch=="mips64el"', {
           'sources': [
             '<(V8_ROOT)/src/builtins/mips64/builtins-mips64.cc',
@@ -902,12 +902,12 @@
           'sources': [
             '<!@pymod_do_main(GN-scraper "<(V8_ROOT)/BUILD.gn"  "\\"v8_base_without_compiler.*?v8_current_cpu == \\"riscv64\\".*?sources \\+= ")',
           ],
-        }],        
+        }],
         ['v8_target_arch=="loong64"', {
           'sources': [
             '<!@pymod_do_main(GN-scraper "<(V8_ROOT)/BUILD.gn"  "\\"v8_base_without_compiler.*?v8_current_cpu == \\"loong64\\".*?sources \\+= ")',
           ],
-        }],        
+        }],
         ['OS=="win"', {
           'msvs_precompiled_header': '<(V8_ROOT)/../../tools/msvs/pch/v8_pch.h',
           'msvs_precompiled_source': '<(V8_ROOT)/../../tools/msvs/pch/v8_pch.cc',
@@ -1282,6 +1282,17 @@
           ],
         }
          ],
+        ['OS=="os2"', {
+           'sources': [
+             '<(V8_ROOT)/src/base/debug/stack_trace_posix.cc',
+             '<(V8_ROOT)/src/base/platform/platform-os2.cc',
+             '<(V8_ROOT)/src/base/platform/platform-posix.h',
+             '<(V8_ROOT)/src/base/platform/platform-posix.cc',
+             '<(V8_ROOT)/src/base/platform/platform-posix-time.h',
+             '<(V8_ROOT)/src/base/platform/platform-posix-time.cc',
+           ],
+         }
+          ],
         ['OS=="netbsd"', {
           'link_settings': {
             'libraries': [
