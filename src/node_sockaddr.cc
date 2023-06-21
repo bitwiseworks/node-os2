@@ -48,11 +48,13 @@ bool SocketAddress::ToSockAddr(
           host,
           port,
           reinterpret_cast<sockaddr_in*>(addr)) == 0;
+#ifndef __OS2__
     case AF_INET6:
       return uv_ip6_addr(
           host,
           port,
           reinterpret_cast<sockaddr_in6*>(addr)) == 0;
+#endif
     default:
       UNREACHABLE();
   }
@@ -62,7 +64,11 @@ bool SocketAddress::New(
     const char* host,
     uint32_t port,
     SocketAddress* addr) {
-  return New(AF_INET, host, port, addr) || New(AF_INET6, host, port, addr);
+  return New(AF_INET, host, port, addr)
+#ifndef __OS2__
+         || New(AF_INET6, host, port, addr)
+#endif
+         ;
 }
 
 bool SocketAddress::New(
@@ -83,6 +89,7 @@ size_t SocketAddress::Hash::operator()(const SocketAddress& addr) const {
       hash_combine(&hash, ipv4->sin_port, ipv4->sin_addr.s_addr);
       break;
     }
+#ifndef __OS2__
     case AF_INET6: {
       const sockaddr_in6* ipv6 =
           reinterpret_cast<const sockaddr_in6*>(addr.raw());
@@ -91,6 +98,7 @@ size_t SocketAddress::Hash::operator()(const SocketAddress& addr) const {
       hash_combine(&hash, ipv6->sin6_port, a[0], a[1]);
       break;
     }
+#endif
     default:
       UNREACHABLE();
   }
@@ -323,15 +331,19 @@ bool SocketAddress::is_match(const SocketAddress& other) const {
     case AF_INET:
       switch (other.family()) {
         case AF_INET: return is_match_ipv4(*this, other);
+#ifndef __OS2__
         case AF_INET6: return is_match_ipv4_ipv6(*this, other);
+#endif
       }
       break;
+#ifndef __OS2__
     case AF_INET6:
       switch (other.family()) {
         case AF_INET: return is_match_ipv4_ipv6(other, *this);
         case AF_INET6: return is_match_ipv6(*this, other);
       }
       break;
+#endif
   }
   return false;
 }
@@ -342,9 +354,12 @@ SocketAddress::CompareResult SocketAddress::compare(
     case AF_INET:
       switch (other.family()) {
         case AF_INET: return compare_ipv4(*this, other);
+#ifndef __OS2__
         case AF_INET6: return compare_ipv4_ipv6(*this, other);
+#endif
       }
       break;
+#ifndef __OS2__
     case AF_INET6:
       switch (other.family()) {
         case AF_INET: {
@@ -364,6 +379,7 @@ SocketAddress::CompareResult SocketAddress::compare(
         case AF_INET6: return compare_ipv6(*this, other);
       }
       break;
+#endif
   }
   return SocketAddress::CompareResult::NOT_COMPARABLE;
 }
@@ -376,15 +392,19 @@ bool SocketAddress::is_in_network(
     case AF_INET:
       switch (other.family()) {
         case AF_INET: return in_network_ipv4(*this, other, prefix);
+#ifndef __OS2__
         case AF_INET6: return in_network_ipv4_ipv6(*this, other, prefix);
+#endif
       }
       break;
+#ifndef __OS2__
     case AF_INET6:
       switch (other.family()) {
         case AF_INET: return in_network_ipv6_ipv4(*this, other, prefix);
         case AF_INET6: return in_network_ipv6(*this, other, prefix);
       }
       break;
+#endif
   }
 
   return false;
@@ -648,7 +668,9 @@ void SocketAddressBlockListWrap::AddSubnet(
   }
 
   CHECK_IMPLIES(addr->address()->family() == AF_INET, prefix <= 32);
+#ifndef __OS2__
   CHECK_IMPLIES(addr->address()->family() == AF_INET6, prefix <= 128);
+#endif
   CHECK_GE(prefix, 0);
 
   wrap->blocklist_->AddSocketAddressMask(addr->address(), prefix);
@@ -729,7 +751,9 @@ void SocketAddressBlockListWrap::Initialize(
   SocketAddressBase::Initialize(env, target);
 
   NODE_DEFINE_CONSTANT(target, AF_INET);
+#ifndef __OS2__
   NODE_DEFINE_CONSTANT(target, AF_INET6);
+#endif
 }
 
 BaseObjectPtr<BaseObject> SocketAddressBlockListWrap::TransferData::Deserialize(
