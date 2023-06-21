@@ -18,15 +18,13 @@
 // The following assumes cdecl calling convention.
 // Source: https://en.wikipedia.org/wiki/X86_calling_conventions#cdecl
 asm(
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__OS2__)
     ".globl _PushAllRegistersAndIterateStack            \n"
     "_PushAllRegistersAndIterateStack:                  \n"
 #else   // !_WIN32
     ".globl PushAllRegistersAndIterateStack             \n"
     ".type PushAllRegistersAndIterateStack, %function   \n"
-#ifndef __OS2__
     ".hidden PushAllRegistersAndIterateStack            \n"
-#endif
     "PushAllRegistersAndIterateStack:                   \n"
 #endif  // !_WIN32
     // [ IterateStackCallback ]
